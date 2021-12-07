@@ -1,6 +1,6 @@
 let Service, Characteristic;
 
-const InfluxDB = require('influx');
+const { InfluxDB } = require('@influxdata/influxdb-client')
 
 const defaultConfig = {
     sensor_names: {
@@ -24,22 +24,36 @@ const defaultConfig = {
 const getLastMesurement = (influx, service, schema, cb) => {
     // InfluxDB queries for each service
     if (service == 'temperature') {
-        influx
-            .query(`SELECT LAST("${schema.temperature.field}") FROM ${schema.temperature.measurement}`)
-            .then(result => cb(null, result[0].last))
+        let query = `from(bucket: "${schema.temperature.bucket}") |> range(start: -1d) |> filter(fn: (r) => r["_measurement"] == "${schema.temperature.measurement}")  |> filter(fn: (r) => r["_field"] == "${schema.temperature.field}") |> last()`
+        influx.collectRows(query)
+            .then(result => result.length > 0 ? cb(null, result[0]._value) : cb("no results found"))
             .catch(err => cb(err));
     } else if (service === 'humidity') {
-        influx
-            .query(`SELECT LAST("${schema.humidity.field}") FROM "${schema.humidity.measurement}"`)
-            .then(result => cb(null, result[0].last))
+        let query = `from(bucket: "${schema.humidity.bucket}") |> range(start: -1d) |> filter(fn: (r) => r["_measurement"] == "${schema.humidity.measurement}")  |> filter(fn: (r) => r["_field"] == "${schema.humidity.field}") |> last()`
+        influx.collectRows(query)
+            .then(result => result.length > 0 ? cb(null, result[0]._value) : cb("no results found"))
             .catch(err => cb(err));
     } else if (service === 'air_quality') {
-        influx
-            .query(
-                `SELECT LAST("${schema.air_quality.fields.pm10}") AS "pm100", LAST(${schema.air_quality.fields.pm2_5}) AS "pm25" FROM ${schema.air_quality.measurement}`
-            )
-            .then(result => cb(null, { pm100: result[0].pm100, pm25: result[0].pm25 }))
-            .catch(err => cb(err));
+
+        let query = `from(bucket: "${schema.air_quality.bucket}") |> range(start: -1d) |> filter(fn: (r) => r["_measurement"] == "${schema.air_quality.measurement}")  |> filter(fn: (r) => r["_field"] == "${schema.air_quality.fields.pm10}" or r["_field"] == "${schema.air_quality.fields.pm2_5}") |> last()`
+        let r = {}
+
+        influx.queryRows(query, {
+            next(row, tableMeta) {
+                const o = tableMeta.toObject(row)
+                if (o._field === schema.air_quality.fields.pm10) {
+                    r["pm100"] = o._value
+                } else if (o._field === schema.air_quality.fields.pm2_5) {
+                    r["pm25"] = o._value
+                }
+            },
+            error(error) {
+                cb(error)
+            },
+            complete() {
+                cb(null, r)
+            },
+        })
     }
 };
 
@@ -94,7 +108,12 @@ function HttpInfluxAir(log, config) {
     this.schema = { ...defaultConfig['schema'], ...config['schema'] };
     this.airQualityRating = { ...defaultConfig['air_quality_rating'], ...config['air_quality_rating'] };
 
-    this.influx = new InfluxDB.InfluxDB({ ...config['influx'] });
+    // this.influx =  new InfluxDB({url: 'https://us-west-2-1.aws.cloud2.influxdata.com', token: token});
+    // this.influxQueryApi = this.influx.getQueryApi(org);
+    this.influx = new InfluxDB({ ...config['influx'] });
+    this.influxQueryApi = this.influx.getQueryApi(config['influx']['org'])
+
+    return influxQueryApi
 }
 
 HttpInfluxAir.prototype = {
