@@ -71,7 +71,7 @@ const getAirQuality = (value, airQualityRating) => {
     let pm100 = value.pm100;
     let pm25 = value.pm25;
 
-    if (!pm100 || !pm25) {
+    if (!pm100 || !pm25) && (pm100 !== 0 || pm25 !== 0) {
         return Characteristic.AirQuality.UNKNOWN;
     }
 
