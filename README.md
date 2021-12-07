@@ -1,13 +1,17 @@
-# homebridge-influx-air ![npm](https://img.shields.io/npm/v/homebridge-influx-air?style=flat-square)
+# homebridge-influx-air ![npm](https://img.shields.io/npm/v/@bcaldwell/homebridge-influx-air?style=flat-square)
 
 ![Banner Image](./screenshots/homebridge-influx-air.png)
 
 A Homebridge plugin that exposes temperature, humidity, and air quality from an InfluxDB instance.
 
 This project is forked from and inspired by:
-
+- [xtai/homebridge-influx-air](https://github.com/xtai/homebridge-influx-air)
 - [tiphedor/homebridge-influxdb-temperature-humidity](https://github.com/tiphedor/homebridge-influxdb-temperature-humidity/).
 - [lucacri/homebridge-http-temperature-humidity](https://github.com/lucacri/homebridge-http-temperature-humidity/)
+
+## Changes in this fork
+- support for influxdb 2.0
+- UI for configuring plugin
 
 ## Install
 
