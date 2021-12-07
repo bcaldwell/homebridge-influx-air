@@ -1,6 +1,6 @@
 {
   "name": "@bcaldwell/homebridge-influx-air",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Homebridge plugin that exposes temperature, humidity, and air quality from an InfluxDB instance.",
   "license": "MIT",
   "keywords": [
