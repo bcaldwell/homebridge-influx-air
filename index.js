@@ -108,19 +108,15 @@ function HttpInfluxAir(log, config) {
     this.schema = { ...defaultConfig['schema'], ...config['schema'] };
     this.airQualityRating = { ...defaultConfig['air_quality_rating'], ...config['air_quality_rating'] };
 
-    // this.influx =  new InfluxDB({url: 'https://us-west-2-1.aws.cloud2.influxdata.com', token: token});
-    // this.influxQueryApi = this.influx.getQueryApi(org);
     this.influx = new InfluxDB({ ...config['influx'] });
     this.influxQueryApi = this.influx.getQueryApi(config['influx']['org'])
-
-    return influxQueryApi
 }
 
 HttpInfluxAir.prototype = {
     // Called when HomeKit wants to read our sensor value.
     getRemoteState: function (service, callback) {
         getLastMesurement(
-            this.influx,
+            this.influxQueryApi,
             service,
             this.schema,
             function (influxError, value) {

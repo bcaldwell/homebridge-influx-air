@@ -1,0 +1,151 @@
+{
+    "pluginAlias": "InfluxAir",
+    "pluginType": "accessory",
+    "singular": true,
+    "schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "default": "Air Sensors",
+            "type": "string"
+          },
+          "sensor_names": {
+            "type": "object",
+            "properties": {
+              "temperature": {
+                "default": "Temperature Sensor",
+                "type": "string"
+              },
+              "humidity": {
+                "default": "Humidity Sensor",
+                "type": "string"
+              },
+              "air_quality": {
+                "default": "Air Quality Sensor",
+                "type": "string"
+              }
+            },
+            "required": [
+              "temperature",
+              "humidity",
+              "air_quality"
+            ]
+          },
+          "schema": {
+            "type": "object",
+            "properties": {
+              "temperature": {
+                "type": "object",
+                "properties": {
+                  "bucket": {
+                    "default": "air",
+                    "type": "string"
+                  },
+                  "field": {
+                    "default": "temperature",
+                    "type": "string"
+                  },
+                  "measurement": {
+                    "default": "air",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "bucket",
+                  "field",
+                  "measurement"
+                ]
+              },
+              "humidity": {
+                "type": "object",
+                "properties": {
+                  "bucket": {
+                    "default": "air",
+                    "type": "string"
+                  },
+                  "field": {
+                    "default": "humidity",
+                    "type": "string"
+                  },
+                  "measurement": {
+                    "default": "air",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "bucket",
+                  "field",
+                  "measurement"
+                ]
+              },
+              "air_quality": {
+                "type": "object",
+                "properties": {
+                  "bucket": {
+                    "default": "air",
+                    "type": "string"
+                  },
+                  "fields": {
+                    "type": "object",
+                    "properties": {
+                      "pm2_5": {
+                        "default": "pm25",
+                        "type": "string"
+                      },
+                      "pm10": {
+                        "default": "pm100",
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "pm2_5",
+                      "pm10"
+                    ]
+                  },
+                  "measurement": {
+                    "default": "air",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "bucket",
+                  "fields",
+                  "measurement"
+                ]
+              }
+            },
+            "required": [
+              "temperature",
+              "humidity",
+              "air_quality"
+            ]
+          },
+          "influx": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string"
+              },
+              "org": {
+                "type": "string"
+              },
+              "token": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "url",
+              "org",
+              "token"
+            ]
+          }
+        },
+        "required": [
+          "accessory",
+          "name",
+          "sensor_names",
+          "schema",
+          "influx"
+        ]
+      }
+  }
