@@ -1,6 +1,6 @@
 {
   "name": "@bcaldwell/homebridge-influx-air",
-  "version": "0.0.4",
+  "version": "0.0.6",
   "description": "A Homebridge plugin that exposes temperature, humidity, and air quality from an InfluxDB instance.",
   "license": "MIT",
   "keywords": [
@@ -12,7 +12,6 @@
     "humidity"
   ],
   "engines": {
-    "node": ">=14.18.1",
     "homebridge": ">=1.3.5"
   },
   "author": "Benjamin Caldwell",
@@ -20,8 +19,20 @@
     "type": "git",
     "url": "git+ssh://git@github.com/bcaldwell/homebridge-influx-air.git"
   },
+  "scripts": {
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && tsc",
+    "_prepublishOnly": "npm run build",
+    "_postpublish": "npm run clean",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
   "dependencies": {
     "@influxdata/influxdb-client": "^1.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "10.17.19",
+    "typescript": "^3.8.3",
+    "homebridge": "^1.0.4"
   },
   "bugs": {
     "url": "https://github.com/bcaldwell/homebridge-influx-air/issues"

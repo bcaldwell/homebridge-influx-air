@@ -71,7 +71,7 @@ const getAirQuality = (value, airQualityRating) => {
     let pm100 = value.pm100;
     let pm25 = value.pm25;
 
-    if (!pm100 || !pm25) && (pm100 !== 0 || pm25 !== 0) {
+    if ((!pm100 || !pm25) && (pm100 !== 0 || pm25 !== 0)) {
         return Characteristic.AirQuality.UNKNOWN;
     }
 
@@ -92,7 +92,7 @@ const getAirQuality = (value, airQualityRating) => {
 module.exports = homebridge => {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
-    homebridge.registerAccessory('homebridge-influx-air', 'InfluxAir', HttpInfluxAir);
+    homebridge.registerAccessory('InfluxAir', HttpInfluxAir);
 };
 
 function HttpInfluxAir(log, config) {
